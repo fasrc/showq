@@ -1,0 +1,102 @@
+showq mimics the functionality of showq in PBS.torque.  This code is not part of LSF but rather put together by RC staff (Chris Walker and Paul Edmon).
+
+The usage of showq is found by simply typing showq -help  This gives an overview of the code output and additional options.  Here is a copy of the current help page:
+
+Welcome to the Help Section.
+Showq provides an overview of the cluster and LSF queues in a similar way to showq in PBS.Torque.
+By default showq will show you your running, pending and suspended jobs plus an overview of the cluster.
+Each job has several fields which are listed below.
+
+JOBID           The LSF job id.
+
+USER            The name of the user.
+
+STAT            The current job state.  RUN if it is running, PEND if it is pending,
+                PSUSP if suspended by the owner or admin,
+                SSUSP if suspended due to host being overloaded or queue run window closure.
+
+QUEUE           The LSF queue the job was submitted from.
+
+CORES/NODES     This lists the number of cores used by the process followed by the number of nodes after the /.
+                Additionally if the job is running in Exclusive mode a X appears next to the node count.
+
+TIME REMAINING  The amount of time remaining on this run.  This is based off of the queue run time limit
+                or if the user defines a run time using BSUB -W it will use that.  Jobs that overrun
+                the a time limit show up with negative time equal to the amount they have overrun.
+                Jobs from queues with no time limit and no user defined limit show up as negative as well.
+                The value in that case is just the negative value of the time the job has run for.
+
+SUBMIT TIME     The time at which the job was submitted to the queue.
+
+START TIME      The time at which the job started running.
+
+Additional Usage options are as below.
+
+-help           Gets you to this convenient help page.
+
+-q queue_name   Shows you what is going on in that queue currently.
+
+-u user_name    Shows the jobs current associated with that user.
+                By default this is set to all if -n or -q is used other wise it is set to the current user.
+                If -u is used in tandem with -q it will show only the jobs running on that queue for that user.
+
+-n host_name    Shows what is going on for this host or group of hosts.
+
+
+Here is an example of the code in action looking at the hernquist group of nodes (the spacing is correct in the command line output):
+
+[pedmon@iliadaccess02 ~]$ showq -n hernquist
+ACTIVE JOBS-------------
+JOBID        USER     STAT   QUEUE   CORES/NODES  TIME REMAINING   SUBMIT TIME    START TIME    
+15737810     gbesla   RUN    keck       32/ 4         4:12:47:02  Dec 05 03:49  Dec 05 03:50  
+15738574     vrodrigu RUN    keck       32/ 8         4:15:08:02  Dec 05 06:10  Dec 05 06:11  
+15791687     lblecha  RUN    keck        1/ 1         5:11:37:10  Dec 06 02:40  Dec 06 02:40  
+15848723     dmunoz   RUN    keck       32/ 4         6:01:06:49  Dec 06 16:09  Dec 06 16:10  
+15865948     dmunoz   RUN    keck       32/ 4         6:03:50:37  Dec 06 18:53  Dec 06 18:53  
+15902188     dnelson  RUN    keck        1/ 1         6:21:28:32  Dec 07 12:31  Dec 07 12:31  
+8504253      dnarayan RUN    astro       1/ 1X       -68:-15:-14:-03  Sep 30 00:49  Sep 30 00:49  
+8504255      dnarayan RUN    astro       1/ 1X       -68:-15:-12:-28  Sep 30 00:50  Sep 30 00:50  
+14305843     phopkins RUN    astro       8/ 1X       -13:00:-33:-50  Nov 24 14:29  Nov 24 14:29  
+14365230     phopkins RUN    astro      16/ 2X       -11:-15:-24:-08  Nov 25 23:38  Nov 25 23:39  
+15833872     dkeres   RUN    astro      16/ 2X       -1:00:-59:-30  Dec 06 14:03  Dec 06 14:03  
+15849304     dnarayan RUN    astro       1/ 1X        0:-22:-47:-57  Dec 06 16:15  Dec 06 16:15  
+12 total jobs
+
+SUSPENDED JOBS-------------
+No matching jobs found
+
+
+Cluster Summary:
+
+                     848 Total Nodes; 6335 Total Cores
+
+           183 Special-Projects Parallel Nodes (1464 Cores, 603 Running, 861 Empty):
+                           92 Nodes Empty
+                           59 Nodes Full
+                           32 Nodes with 125 Cores Empty
+
+           491 Parallel Nodes (3928 Cores, 3541 Running, 387 Empty):
+                           41 Nodes Empty
+                           435 Nodes Full
+                           15 Nodes with 59 Cores Empty
+
+           174 Serial Nodes (943 Cores, 500 Running, 443 Empty):
+                           57 Nodes Empty
+                           70 Nodes Full
+                           47 Nodes with 175 Cores Empty
+
+
+PENDING JOBS-------------
+No matching jobs found
+
+
+Note that you can see which jobs are running in Exclusive mode and how 
+many cores they are running on.  You can also notice that the astro queue time 
+remaining is negative which would mean that either the runs have gone 
+over the queues time limit or the queue does not have one.  In this case 
+the astro queue has no time limit.
+
+This code is still under development as the summary is in rough shape.  Any suggestions for improvements would be appreciated.
+
+Paul Edmon
+12-15-11
